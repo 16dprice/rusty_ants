@@ -1,5 +1,5 @@
+use ggez::{event, GameResult};
 use global_state::GlobalState;
-use ggez::{GameResult, event};
 
 pub mod global_state;
 
