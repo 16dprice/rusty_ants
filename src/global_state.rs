@@ -8,11 +8,15 @@ use crate::math::vector::Vector;
 
 pub struct GlobalState {
     ants: Vec<Ant>,
+    target: Vector,
 }
 
 impl GlobalState {
     pub fn new(ants: Vec<Ant>) -> GameResult<GlobalState> {
-        let s = GlobalState { ants };
+        let s = GlobalState {
+            ants,
+            target: Vector::new(300.0, 300.0),
+        };
         Ok(s)
     }
 }
@@ -20,7 +24,7 @@ impl GlobalState {
 impl event::EventHandler<ggez::GameError> for GlobalState {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
         for ant in self.ants.iter_mut() {
-            ant.update(Vector::new(300.0, 300.0));
+            ant.update(self.target);
         }
         Ok(())
     }
@@ -53,7 +57,7 @@ impl event::EventHandler<ggez::GameError> for GlobalState {
         _x: f32,
         _y: f32,
     ) -> Result<(), ggez::GameError> {
-        println!("({}, {})", _x, _y);
+        self.target = Vector::new(_x, _y);
 
         Ok(())
     }
