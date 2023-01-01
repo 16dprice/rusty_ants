@@ -3,25 +3,21 @@ use ggez::glam::*;
 use ggez::graphics::{self, Color};
 use ggez::{Context, GameResult};
 
+use crate::ant::Ant;
+
 pub struct GlobalState {
-    pos_x: f32,
-    pos_y: f32,
+    ants: Vec<Ant>,
 }
 
 impl GlobalState {
-    pub fn new() -> GameResult<GlobalState> {
-        let s = GlobalState {
-            pos_x: 0.0,
-            pos_y: 0.0,
-        };
+    pub fn new(ants: Vec<Ant>) -> GameResult<GlobalState> {
+        let s = GlobalState { ants: ants };
         Ok(s)
     }
 }
 
 impl event::EventHandler<ggez::GameError> for GlobalState {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
-        self.pos_x = self.pos_x % 800.0 + 1.0;
-        self.pos_y = self.pos_x;
         Ok(())
     }
 
@@ -29,15 +25,18 @@ impl event::EventHandler<ggez::GameError> for GlobalState {
         let mut canvas =
             graphics::Canvas::from_frame(ctx, graphics::Color::from([0.9, 0.1, 0.3, 1.0]));
 
-        let circle = graphics::Mesh::new_circle(
-            ctx,
-            graphics::DrawMode::fill(),
-            Vec2::new(0.0, 0.0),
-            100.0,
-            2.0,
-            Color::BLACK,
-        )?;
-        canvas.draw(&circle, Vec2::new(self.pos_x, self.pos_y));
+        for ant in self.ants.iter() {
+            let circle = graphics::Mesh::new_circle(
+                ctx,
+                graphics::DrawMode::fill(),
+                Vec2::new(0.0, 0.0),
+                5.0,
+                2.0,
+                Color::BLACK,
+            )?;
+
+            canvas.draw(&circle, Vec2::new(ant.pos.x, ant.pos.y))
+        }
 
         canvas.finish(ctx)?;
         Ok(())
