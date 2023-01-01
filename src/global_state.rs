@@ -11,7 +11,7 @@ pub struct GlobalState {
 
 impl GlobalState {
     pub fn new(ants: Vec<Ant>) -> GameResult<GlobalState> {
-        let s = GlobalState { ants: ants };
+        let s = GlobalState { ants };
         Ok(s)
     }
 }
