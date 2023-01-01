@@ -4,6 +4,7 @@ use ggez::graphics::{self, Color};
 use ggez::{Context, GameResult};
 
 use crate::ant::Ant;
+use crate::math::vector::Vector;
 
 pub struct GlobalState {
     ants: Vec<Ant>,
@@ -19,7 +20,7 @@ impl GlobalState {
 impl event::EventHandler<ggez::GameError> for GlobalState {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
         for ant in self.ants.iter_mut() {
-            ant.update();
+            ant.update(Vector::new(300.0, 300.0));
         }
         Ok(())
     }

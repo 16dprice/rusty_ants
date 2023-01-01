@@ -1,5 +1,6 @@
 use crate::math::vector::Vector;
-use rand::Rng;
+
+const TOL: f32 = 0.0001;
 
 pub struct Ant {
     pos: Vector,
@@ -20,14 +21,18 @@ impl Ant {
         self.pos.get_y()
     }
 
-    pub fn update(&mut self) {
-        let mut range = rand::thread_rng();
+    pub fn update(&mut self, target: Vector) {
+        let delta_x = target.get_x() - self.get_x();
+        let delta_y = target.get_y() - self.get_y();
 
-        let rand_x = range.gen_range(-1.0, 1.0);
-        let rand_y = range.gen_range(-1.0, 1.0);
+        if f32::abs(delta_x) < TOL && f32::abs(delta_y) < TOL {
+            return;
+        }
 
-        let new_x = self.get_x() + rand_x;
-        let new_y = self.get_y() + rand_y;
+        let direction = Vector::new_normalized(delta_x, delta_y);
+
+        let new_x = self.get_x() + direction.get_x();
+        let new_y = self.get_y() + direction.get_y();
 
         self.pos.set_pos(new_x, new_y);
     }
