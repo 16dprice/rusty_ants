@@ -18,6 +18,9 @@ impl GlobalState {
 
 impl event::EventHandler<ggez::GameError> for GlobalState {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
+        for ant in self.ants.iter_mut() {
+            ant.update();
+        }
         Ok(())
     }
 
@@ -35,7 +38,7 @@ impl event::EventHandler<ggez::GameError> for GlobalState {
                 Color::BLACK,
             )?;
 
-            canvas.draw(&circle, Vec2::new(ant.pos.x, ant.pos.y))
+            canvas.draw(&circle, Vec2::new(ant.get_x(), ant.get_y()))
         }
 
         canvas.finish(ctx)?;
