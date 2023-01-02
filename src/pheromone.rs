@@ -1,18 +1,27 @@
 use crate::math::vector::Vector;
+use std::time::Instant;
 
-const DEFAULT_PHEROMONE_RANGE: f32 = 20.0;
+const EXPIRATION_TIME: f32 = 10_000.0;
+
+#[derive(Copy, Clone)]
+enum PheromoneType {
+    Food,
+    GoHome,
+}
 
 #[derive(Copy, Clone)]
 pub struct Pheromone {
     pos: Vector,
-    range: f32,
+    pheromone_type: PheromoneType,
+    created_at: Instant,
 }
 
 impl Pheromone {
     pub fn new(pos_x: f32, pos_y: f32) -> Pheromone {
         Pheromone {
             pos: Vector::new(pos_x, pos_y),
-            range: DEFAULT_PHEROMONE_RANGE,
+            pheromone_type: PheromoneType::GoHome,
+            created_at: Instant::now(),
         }
     }
 
@@ -24,27 +33,12 @@ impl Pheromone {
         self.pos.get_y()
     }
 
-    pub fn get_range(&self) -> f32 {
-        self.range
-    }
-
-    fn get_strength(self, distance: f32) -> f32 {
-        (distance / (1.0 - self.range)) + (self.range / (self.range - 1.0))
-    }
-
-    pub fn get_strength_vector(self, initial: Vector) -> Vector {
-        let delta_x = self.get_x() - initial.get_x();
-        let delta_y = self.get_y() - initial.get_y();
-
-        let distance = f32::sqrt(delta_x * delta_x + delta_y * delta_y);
-
-        if distance <= 1.0 {
-            return Vector::new(delta_x, delta_y);
-        } else if distance > self.range {
-            return Vector::new(0.0, 0.0);
+    pub fn percent_time_left(&self) -> f32 {
+        let time_alive = self.created_at.elapsed().as_millis();
+        if time_alive > (EXPIRATION_TIME as u128) {
+            return 0.0;
         } else {
-            let strength = self.get_strength(distance);
-            return Vector::new(strength * delta_x, strength * delta_y);
+            return 1.0 - ((time_alive as f32) / EXPIRATION_TIME);
         }
     }
 }

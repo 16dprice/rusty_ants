@@ -1,12 +1,16 @@
 use ant::Ant;
+use food::Food;
 use ggez::{event, GameResult};
 use global_state::GlobalState;
 use pheromone::Pheromone;
 use rand::Rng;
 
 const NUM_ANTS: u16 = 4;
+const NUM_FOOD: u16 = 10;
+const NUM_PHEROMONES: u16 = 20;
 
 pub mod ant;
+pub mod food;
 pub mod global_state;
 pub mod math;
 pub mod pheromone;
@@ -18,31 +22,30 @@ pub fn main() -> GameResult {
     let mut range = rand::thread_rng();
 
     let mut ants = vec![];
-    for _ in 1..NUM_ANTS {
+    for _ in 0..NUM_ANTS {
         ants.push(Ant::new(
             range.gen_range(100.0, 700.0),
             range.gen_range(100.0, 500.0),
         ));
     }
 
-    // let pheromones = vec![
-    //     Pheromone::new(86.0, 509.0),
-    //     Pheromone::new(78.0, 479.0),
-    //     Pheromone::new(83.0, 450.0),
-    //     Pheromone::new(118.0, 439.0),
-    //     Pheromone::new(150.0, 401.0),
-    //     Pheromone::new(160.0, 394.0),
-    //     Pheromone::new(170.0, 360.0),
-    //     Pheromone::new(180.0, 344.0),
-    //     Pheromone::new(190.0, 321.0),
-    //     Pheromone::new(210.0, 321.0),
-    //     Pheromone::new(225.0, 321.0),
-    //     Pheromone::new(250.0, 321.0),
-    //     Pheromone::new(270.0, 345.0),
-    //     Pheromone::new(280.0, 330.0),
-    // ];
+    let mut pheromones = vec![];
+    for _ in 0..NUM_PHEROMONES {
+        pheromones.push(Pheromone::new(
+            range.gen_range(100.0, 700.0),
+            range.gen_range(100.0, 500.0),
+        ));
+    }
 
-    let state = GlobalState::new(ants, vec![])?;
+    let mut food = vec![];
+    for _ in 0..NUM_FOOD {
+        food.push(Food::new(
+            range.gen_range(100.0, 700.0),
+            range.gen_range(100.0, 500.0),
+        ));
+    }
+
+    let state = GlobalState::new(ants, pheromones, food)?;
 
     event::run(ctx, event_loop, state)
 }
