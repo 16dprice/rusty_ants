@@ -1,9 +1,14 @@
 use ant::Ant;
 use food::Food;
-use ggez::{event, GameResult};
 use global_state::GlobalState;
 use pheromone::Pheromone;
 use rand::Rng;
+
+use winit::{
+    event::*,
+    event_loop::{ControlFlow, EventLoop},
+    window::WindowBuilder,
+};
 
 const NUM_ANTS: u16 = 10;
 const NUM_FOOD: u16 = 10;
@@ -15,10 +20,33 @@ pub mod global_state;
 pub mod math;
 pub mod pheromone;
 
-pub fn main() -> GameResult {
-    let cb = ggez::ContextBuilder::new("super_simple", "ggez");
-    let (ctx, event_loop) = cb.build()?;
+pub fn run() {
+    env_logger::init();
+    let event_loop = EventLoop::new();
+    let window = WindowBuilder::new().build(&event_loop).unwrap();
 
+    event_loop.run(move |event, _, control_flow| match event {
+        Event::WindowEvent {
+            ref event,
+            window_id,
+        } if window_id == window.id() => match event {
+            WindowEvent::CloseRequested
+            | WindowEvent::KeyboardInput {
+                input:
+                    KeyboardInput {
+                        state: ElementState::Pressed,
+                        virtual_keycode: Some(VirtualKeyCode::Escape),
+                        ..
+                    },
+                ..
+            } => *control_flow = ControlFlow::Exit,
+            _ => {}
+        },
+        _ => {}
+    });
+}
+
+pub fn main() {
     let mut range = rand::thread_rng();
 
     let mut ants = vec![];
@@ -45,7 +73,7 @@ pub fn main() -> GameResult {
         ));
     }
 
-    let state = GlobalState::new(ants, pheromones, food)?;
+    let state = GlobalState::new(ants, pheromones, food);
 
-    event::run(ctx, event_loop, state)
+    run();
 }
