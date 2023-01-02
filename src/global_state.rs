@@ -36,7 +36,7 @@ impl event::EventHandler<ggez::GameError> for GlobalState {
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
         let mut canvas =
-            graphics::Canvas::from_frame(ctx, graphics::Color::from([0.9, 0.1, 0.3, 1.0]));
+            graphics::Canvas::from_frame(ctx, graphics::Color::from([0.5, 0.5, 0.5, 1.0]));
 
         // for pheromone in self.pheromones.iter() {
         //     let circle = graphics::Mesh::new_circle(
