@@ -5,9 +5,9 @@ use global_state::GlobalState;
 use pheromone::Pheromone;
 use rand::Rng;
 
-const NUM_ANTS: u16 = 4;
+const NUM_ANTS: u16 = 10;
 const NUM_FOOD: u16 = 10;
-const NUM_PHEROMONES: u16 = 20;
+const NUM_PHEROMONES: u16 = 0;
 
 pub mod ant;
 pub mod food;

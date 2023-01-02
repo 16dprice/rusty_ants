@@ -1,5 +1,6 @@
 use crate::{math::vector::Vector, pheromone::Pheromone};
 use rand::Rng;
+use std::time::Instant;
 
 const TOL: f32 = 2.0;
 
@@ -27,6 +28,7 @@ pub struct Ant {
     speed: f32,
     steer_strength: f32,
     wander_strength: f32,
+    last_pheromone_drop_time: Instant,
 }
 
 impl Ant {
@@ -35,9 +37,10 @@ impl Ant {
             pos: Vector::new(pos_x, pos_y),
             desired_direction: Vector::right(),
             velocity: Vector::right(),
-            speed: 2.0,
+            speed: 1.0,
             steer_strength: 2.0,
             wander_strength: 0.2,
+            last_pheromone_drop_time: Instant::now(),
         }
     }
 
@@ -53,7 +56,7 @@ impl Ant {
         self.velocity
     }
 
-    pub fn update(&mut self) {
+    pub fn update(&mut self) -> Option<Pheromone> {
         let random_direction = self.direction().times(self.wander_strength);
         self.desired_direction = self.desired_direction.add(random_direction).normalize();
 
@@ -65,6 +68,14 @@ impl Ant {
 
         self.velocity = self.velocity.add(acceleration).clamp_magnitude(self.speed);
         self.pos = self.pos.add(self.velocity);
+
+        if self.last_pheromone_drop_time.elapsed().as_millis() > 1_000 {
+            self.last_pheromone_drop_time = Instant::now();
+
+            return Some(Pheromone::new(self.get_x(), self.get_y()));
+        } else {
+            return None;
+        }
     }
 
     fn direction(&self) -> Vector {
