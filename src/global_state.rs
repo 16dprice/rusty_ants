@@ -36,8 +36,15 @@ impl GlobalState {
 impl event::EventHandler<ggez::GameError> for GlobalState {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
         for ant in self.ants.iter_mut() {
-            // ant.update(&self.pheromones);
-            ant.update();
+            let pheromone_opt = ant.update();
+
+            match pheromone_opt {
+                None => {}
+                Some(pheromone) => {
+                    println!("{}", self.pheromones.len());
+                    self.pheromones.push(pheromone)
+                }
+            }
         }
         Ok(())
     }
@@ -96,7 +103,7 @@ fn draw_pheromones(
             Vec2::new(0.0, 0.0),
             6.0,
             2.0,
-            Color::MAGENTA,
+            Color::from([1.0, 0.0, 1.0, pheromone.percent_time_left()]),
         )?;
 
         canvas.draw(&circle, Vec2::new(pheromone.get_x(), pheromone.get_y()));
