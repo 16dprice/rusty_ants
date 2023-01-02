@@ -4,6 +4,8 @@ use global_state::GlobalState;
 use pheromone::Pheromone;
 use rand::Rng;
 
+const NUM_ANTS: u16 = 4;
+
 pub mod ant;
 pub mod global_state;
 pub mod math;
@@ -16,7 +18,7 @@ pub fn main() -> GameResult {
     let mut range = rand::thread_rng();
 
     let mut ants = vec![];
-    for _ in 1..100 {
+    for _ in 1..NUM_ANTS {
         ants.push(Ant::new(
             range.gen_range(100.0, 700.0),
             range.gen_range(100.0, 500.0),

@@ -35,7 +35,7 @@ impl Ant {
             pos: Vector::new(pos_x, pos_y),
             desired_direction: Vector::right(),
             velocity: Vector::right(),
-            speed: 1.0,
+            speed: 2.0,
             steer_strength: 2.0,
             wander_strength: 0.2,
         }
@@ -47,6 +47,10 @@ impl Ant {
 
     pub fn get_y(&self) -> f32 {
         self.pos.get_y()
+    }
+
+    pub fn get_velocity(&self) -> Vector {
+        self.velocity
     }
 
     pub fn update(&mut self) {

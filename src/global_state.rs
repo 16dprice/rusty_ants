@@ -1,6 +1,7 @@
 use ggez::event;
 use ggez::glam::*;
 use ggez::graphics::{self, Color};
+use ggez::mint::Point2;
 use ggez::{Context, GameResult};
 
 use crate::ant::Ant;
@@ -51,6 +52,12 @@ impl event::EventHandler<ggez::GameError> for GlobalState {
         // }
 
         for ant in self.ants.iter() {
+            let ant_x = ant.get_x();
+            let ant_y = ant.get_y();
+
+            let vel_x = ant.get_velocity().get_x();
+            let vel_y = ant.get_velocity().get_y();
+
             let circle = graphics::Mesh::new_circle(
                 ctx,
                 graphics::DrawMode::fill(),
@@ -59,8 +66,14 @@ impl event::EventHandler<ggez::GameError> for GlobalState {
                 5.0,
                 Color::BLACK,
             )?;
+            canvas.draw(&circle, Vec2::new(ant_x, ant_y));
 
-            canvas.draw(&circle, Vec2::new(ant.get_x(), ant.get_y()))
+            let pt1 = Point2::from_slice(&[ant_x, ant_y]);
+            let pt2 = Point2::from_slice(&[ant_x + 10.0 * vel_x, ant_y + 10.0 * vel_y]);
+
+            let line = graphics::Mesh::new_line(ctx, &[pt1, pt2], 2.0, Color::BLACK)?;
+
+            canvas.draw(&line, Vec2::new(0.0, 0.0));
         }
 
         canvas.finish(ctx)?;
